@@ -1,0 +1,42 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+
+# Python cache / test
+.pytest_cache/
+.mypy_cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Airflow
+airflow.db
+airflow-webserver.pid
+logs/
+
+# Local PostgreSQL / Docker data if you create local folders
+postgres_data/
+
+# Generated data if you don't want large outputs committed
+data/bronze/*
+data/silver/*
+data/gold/*
