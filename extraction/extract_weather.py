@@ -28,11 +28,18 @@ params = {
     ],
     "timezone": "auto",
 }
+try:
+    response = requests.get(weather_url, params=params, timeout=30)
+    response.raise_for_status()
 
-response = requests.get(weather_url, params=params, timeout=30)
-response.raise_for_status()
+    weather_data = response.json()
 
-weather_data = response.json()
+    with open(stored_weather, "w", encoding="utf-8") as f:
+        json.dump(weather_data, f, ensure_ascii=False, indent=4)
+except requests.exceptions.RequestException as e:
+    print(f"fetch data error : {e}")
+except requests.exceptions.JSONDecodeError as e:
+    print(f"invalid JSON response: {e}")
 
-with open(stored_weather, "w", encoding="utf-8") as f:
-    json.dump(weather_data, f, ensure_ascii=False, indent=4)
+except OSError as e:
+    print(f"file write error: {e}")
