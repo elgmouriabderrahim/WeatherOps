@@ -36,8 +36,12 @@ try:
 
     with open(stored_weather, "w", encoding="utf-8") as f:
         json.dump(weather_data, f, ensure_ascii=False, indent=4)
+
+    print("weather data loaded successfully")
+
 except requests.exceptions.RequestException as e:
     print(f"fetch data error : {e}")
+
 except requests.exceptions.JSONDecodeError as e:
     print(f"invalid JSON response: {e}")
 
