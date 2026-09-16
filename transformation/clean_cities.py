@@ -14,7 +14,7 @@ for forecast in weather:
     df["longitude"] = forecast["longitude"]
     weather_df.append(df)
 
-weather_df = pd.concat(weather_df, ignore_index=True).dropna()
+weather_df = pd.concat(weather_df, ignore_index=True)
 weather_df = weather_df.rename(columns={
     "time": "date",
     "temperature_2m_max": "temperature_max_c",
@@ -26,6 +26,25 @@ weather_df = weather_df.rename(columns={
     "weather_code": "weather_code"
 })
 
-cities = cities[["city_name", "latitude", "longitude"]].dropna()
-print(weather_df)
-print(cities)
+cities = cities[["city_name", "latitude", "longitude"]]
+
+cities[["latitude", "longitude"]] = cities[["latitude", "longitude"]].apply(pd.to_numeric, errors="coerce")
+
+weather_df["date"] = pd.to_datetime(weather_df["date"])
+numeric_columns = [
+    "temperature_max_c",
+    "temperature_min_c",
+    "precipitation_mm",
+    "precipitation_probability_pct",
+    "wind_speed_kmh",
+    "wind_gust_kmh",
+    "weather_code",
+    "latitude",
+    "longitude",
+]
+weather_df[numeric_columns] = weather_df[numeric_columns].apply(
+    pd.to_numeric,
+    errors="coerce"
+)
+cities = cities.dropna()
+weather_df = weather_df.dropna()
