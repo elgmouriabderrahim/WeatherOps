@@ -46,5 +46,6 @@ weather_df[numeric_columns] = weather_df[numeric_columns].apply(
     pd.to_numeric,
     errors="coerce"
 )
-cities = cities.dropna()
-weather_df = weather_df.dropna()
+cities = cities.dropna().drop_duplicates()
+weather_df = weather_df.dropna().drop_duplicates()
+
