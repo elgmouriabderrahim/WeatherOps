@@ -48,7 +48,7 @@ weather_df[numeric_columns] = weather_df[numeric_columns].apply(
     errors="coerce"
 )
 cities = cities.dropna().drop_duplicates()
-weather_df = weather_df.dropna().drop_duplicates()
+weather_df = weather_df.dropna().drop_duplicates(subset=["city_name", "date"])
 
 cities = cities[cities["latitude"].between(-90, 90) & cities["longitude"].between(-180, 180)]
 weather_df = weather_df[weather_df["latitude"].between(-90, 90) & weather_df["longitude"].between(-180, 180)]
@@ -56,5 +56,6 @@ weather_df = weather_df[(weather_df["precipitation_mm"] >= 0) & (weather_df["pre
 weather_df = weather_df[weather_df["temperature_max_c"].between(-60, 60) & weather_df["temperature_min_c"].between(-60, 60)]
 weather_df = weather_df[weather_df["temperature_max_c"] >= weather_df["temperature_min_c"]]
 
-print(cities)
-print(weather_df.head(50))
+
+weather_df.to_csv("data/silver/clean_weather_data.csv", index=False)
+cities.to_csv("data/silver/clean_cities.csv", index=False)
