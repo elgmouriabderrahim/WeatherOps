@@ -49,3 +49,8 @@ weather_df[numeric_columns] = weather_df[numeric_columns].apply(
 cities = cities.dropna().drop_duplicates()
 weather_df = weather_df.dropna().drop_duplicates()
 
+cities = cities[cities["latitude"].between(-90, 90) & cities["longitude"].between(-180, 180)]
+weather_df = weather_df[weather_df["latitude"].between(-90, 90) & weather_df["longitude"].between(-180, 180)]
+weather_df = weather_df[(weather_df["precipitation_mm"] >= 0) & (weather_df["precipitation_probability_pct"].between(0, 100)) & (weather_df["wind_speed_kmh"] >= 0) & (weather_df["wind_gust_kmh"] >= 0)]
+weather_df = weather_df[weather_df["temperature_max_c"].between(-60, 60) & weather_df["temperature_min_c"].between(-60, 60)]
+weather_df = weather_df[weather_df["temperature_max_c"] >= weather_df["temperature_min_c"]]
