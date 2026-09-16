@@ -8,10 +8,11 @@ with open("data/bronze/weather.json", "r", encoding="utf-8") as f:
 
 cities = cities.rename(columns={"city": "city_name", "lat": "latitude", "lng": "longitude"})
 weather_df = []
-for forecast in weather:
+for i, forecast in enumerate(weather):
     df = pd.DataFrame(forecast["daily"])
-    df["latitude"] = forecast["latitude"]
-    df["longitude"] = forecast["longitude"]
+    df["latitude"] = cities.loc[i, "latitude"]
+    df["longitude"] = cities.loc[i, "longitude"]
+    df["city_name"] = cities.loc[i, "city_name"]
     weather_df.append(df)
 
 weather_df = pd.concat(weather_df, ignore_index=True)
@@ -54,3 +55,6 @@ weather_df = weather_df[weather_df["latitude"].between(-90, 90) & weather_df["lo
 weather_df = weather_df[(weather_df["precipitation_mm"] >= 0) & (weather_df["precipitation_probability_pct"].between(0, 100)) & (weather_df["wind_speed_kmh"] >= 0) & (weather_df["wind_gust_kmh"] >= 0)]
 weather_df = weather_df[weather_df["temperature_max_c"].between(-60, 60) & weather_df["temperature_min_c"].between(-60, 60)]
 weather_df = weather_df[weather_df["temperature_max_c"] >= weather_df["temperature_min_c"]]
+
+print(cities)
+print(weather_df.head(50))
