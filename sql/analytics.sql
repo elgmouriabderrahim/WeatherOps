@@ -48,3 +48,16 @@ WHERE w.risk_score = (
     WHERE w2.city_id = w.city_id
 )
 ORDER BY w.risk_score DESC;
+
+
+SELECT
+    c.city_name,
+    w.forecast_date,
+    w.risk_score,
+    RANK() OVER (
+        PARTITION BY c.city_name
+        ORDER BY w.risk_score DESC
+    ) AS risk_rank
+FROM weather_forecasts w
+JOIN cities c
+    ON w.city_id = c.id;
