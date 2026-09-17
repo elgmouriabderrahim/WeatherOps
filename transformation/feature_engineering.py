@@ -80,3 +80,7 @@ weather_df["risk_level"] = pd.cut(
     labels=["low", "modurate", "high", "critical"],
     right=False
 )
+
+weather_df.to_csv("data/gold/featured_data.csv", index=False)
+
+print(weather_df)
