@@ -46,13 +46,14 @@ with engine.begin() as connection:
 db_cities = pd.read_sql("SELECT id, city_name, latitude, longitude FROM cities", engine)
 weather = weather.merge(db_cities, on=["city_name", "latitude", "longitude"], how="left")
 
-if weather["city_id"].isna().any():
-    raise ValueError("Some weather rows could not be matched to cities")
-
 weather = weather.rename(columns={
     "id": "city_id",
     "date": "forecast_date"
 })
+
+if weather["city_id"].isna().any():
+    raise ValueError("Some weather rows could not be matched to cities")
+
 weather = weather[[
     "city_id",
     "forecast_date",
