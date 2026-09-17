@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS weatherops
 
 CREATE TABLE IF NOT EXISTS cities(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
+    city_name VARCHAR(255) UNIQUE NOT NULL,
     latitude DOUBLE PRECISION NOT NULL,
     longitude DOUBLE PRECISION NOT NULL,
     UNIQUE(name, latitude, longitude)
