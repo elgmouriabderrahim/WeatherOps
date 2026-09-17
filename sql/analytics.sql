@@ -15,3 +15,13 @@ JOIN cities c
     ON w.city_id = c.id
 GROUP BY c.city_name
 ORDER BY max_precipitation_mm DESC;
+
+
+SELECT
+    c.city_name,
+    AVG(w.risk_score) AS average_risk_score
+FROM weather_forecasts w
+JOIN cities c
+    ON w.city_id = c.id
+GROUP BY c.city_name
+ORDER BY average_risk_score DESC;
