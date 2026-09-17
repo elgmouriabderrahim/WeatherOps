@@ -33,3 +33,18 @@ SELECT
 FROM weather_forecasts w
 GROUP BY w.forecast_date
 ORDER BY max_risk_score DESC;
+
+
+SELECT
+    c.city_name,
+    w.forecast_date,
+    w.risk_score
+FROM weather_forecasts w
+JOIN cities c
+    ON w.city_id = c.id
+WHERE w.risk_score = (
+    SELECT MAX(w2.risk_score)
+    FROM weather_forecasts w2
+    WHERE w2.city_id = w.city_id
+)
+ORDER BY w.risk_score DESC;
