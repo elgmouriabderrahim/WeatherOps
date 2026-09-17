@@ -6,3 +6,12 @@ JOIN cities c
     ON w.city_id = c.id
 GROUP BY c.city_name
 ORDER BY max_temperature_c DESC;
+
+SELECT
+    c.city_name,
+    MAX(w.precipitation_mm) AS max_precipitation_mm
+FROM weather_forecasts w
+JOIN cities c
+    ON w.city_id = c.id
+GROUP BY c.city_name
+ORDER BY max_precipitation_mm DESC;
