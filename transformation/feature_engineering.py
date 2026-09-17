@@ -34,11 +34,8 @@ temperature_points = {
     "hot": 10,
     "extreme": 25,
 }
-weather_df["temperature_risk"] = (
-    weather_df["temperature_category"]
-    .map(temperature_points)
-    .astype(int)
-)
+weather_df["temperature_risk"] = weather_df["temperature_category"].map(temperature_points).astype(int)
+
 
 
 precipitation_points = {
@@ -47,11 +44,8 @@ precipitation_points = {
     "moderate": 20,
     "heavy": 30,
 }
-weather_df["precipitation_risk"] = (
-    weather_df["precipitation_category"]
-    .map(precipitation_points)
-    .astype(int)
-)
+weather_df["precipitation_risk"] = weather_df["precipitation_category"].map(precipitation_points).astype(int)
+
 
 
 wind_points = {
@@ -60,34 +54,29 @@ wind_points = {
     "strong": 20,
     "severe": 30,
 }
-weather_df["wind_risk"] = (
-    weather_df["wind_category"]
-    .map(wind_points)
-    .astype(int)
-)
+weather_df["wind_risk"] = weather_df["wind_category"].map(wind_points).astype(int)
+
 
 def weather_code_risk(code):
     if code in [0, 1, 2]:
         return 0
-
     elif code in [3, 45, 48]:
         return 5
-
     elif 51 <= code <= 82:
         return 10
-
     elif 85 <= code <= 99:
         return 15
-
     return 0
 
 weather_df["weather_code_risk"] = weather_df["weather_code"].apply(
     weather_code_risk
 )
 
-weather_df["risk_score"] = (
-    weather_df["temperature_risk"]
-    + weather_df["precipitation_risk"]
-    + weather_df["wind_risk"]
-    + weather_df["weather_code_risk"]
+weather_df["risk_score"] = weather_df["temperature_risk"] + weather_df["precipitation_risk"] + weather_df["wind_risk"] + weather_df["weather_code_risk"]
+
+weather_df["risk_level"] = pd.cut(
+    weather_df["risk_score"],
+    bins = [-1,25, 50, 75, 100],
+    labels=["low", "modurate", "high", "critical"],
+    right=False
 )
