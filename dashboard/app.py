@@ -49,3 +49,16 @@ if select_date != "All":
 risk_by_city = (filtered_df.groupby("city_name")["risk_score"].mean().sort_values(ascending=False))
 st.subheader("Risk by City")
 st.bar_chart(risk_by_city)
+
+
+
+if select_city != "All":
+    weather_over_time = filtered_df.copy()
+    weather_over_time["forecast_date"] = weather_over_time["forecast_date"].astype(str)
+    weather_over_time = weather_over_time.sort_values("forecast_date").set_index("forecast_date")
+
+    st.subheader(f"Weather Over Time for {select_city}")
+    st.line_chart(weather_over_time[["temperature_max_c", "temperature_min_c"]])
+
+    st.subheader(f"Precipitation Over Time for {select_city}")
+    st.bar_chart(weather_over_time[["precipitation_mm"]])
