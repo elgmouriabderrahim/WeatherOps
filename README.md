@@ -2,6 +2,12 @@
 
 WeatherOps collects weather forecasts for Moroccan cities, cleans and enriches them with weather-risk scores, stores the results in PostgreSQL, and displays them in a Streamlit dashboard. An Apache Airflow DAG runs the pipeline daily.
 
+
+## planification jira
+
+[Voir le board Jira](https://eaofficialbox.atlassian.net/jira/software/projects/WOPS/boards/35?filter=&groupBy=none&atlOrigin=eyJpIjoiMWU5OTFkNzFjYTZiNDRmZmFhMDM3OGI3NjI1YzcwODciLCJwIjoiaiJ9)
+
+
 ## Stack
 
 - **Python, Requests, and pandas** for extraction and transformation.
