@@ -5,7 +5,7 @@ WeatherOps collects weather forecasts for Moroccan cities, cleans and enriches t
 
 ## planification jira
 
-[Voir le board Jira](https://eaofficialbox.atlassian.net/jira/software/projects/WOPS/boards/35?filter=&groupBy=none&atlOrigin=eyJpIjoiMWU5OTFkNzFjYTZiNDRmZmFhMDM3OGI3NjI1YzcwODciLCJwIjoiaiJ9)
+[View the Jira board](https://eaofficialbox.atlassian.net/jira/software/projects/WOPS/boards/35?filter=&groupBy=none&atlOrigin=eyJpIjoiMWU5OTFkNzFjYTZiNDRmZmFhMDM3OGI3NjI1YzcwODciLCJwIjoiaiJ9)
 
 
 ## Stack
@@ -41,6 +41,13 @@ The pipeline downloads Moroccan city coordinates from SimpleMaps and forecasts f
 The DAG is named `weatherops_pipeline`. It uses an `@daily` schedule, starts on September 18, 2026, and disables historical catchup. Failed tasks have two retries, two minutes apart.
 
 ## Run with Docker
+
+Clone the repository and enter the project directory:
+
+```bash
+git clone https://github.com/elgmouriabderrahim/WeatherOps.git
+cd WeatherOps
+```
 
 ### 1. Configure the environment
 
@@ -88,11 +95,7 @@ docker compose logs airflow
 
 Open Airflow, find `weatherops_pipeline`, unpause it, and trigger a run. Wait for all five tasks to succeed before opening the dashboard on a fresh database: the current dashboard expects forecast rows to exist.
 
-If the dashboard was opened before loading finished, restart it to reload its imported data:
-
-```bash
-docker compose restart dashboard
-```
+If the dashboard shows “No weather data available,” wait for the Airflow pipeline to finish successfully, then refresh the dashboard page.
 
 ## Dashboard
 
