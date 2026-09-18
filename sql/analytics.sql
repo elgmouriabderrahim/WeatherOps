@@ -1,3 +1,4 @@
+-- Highest temperature by city
 SELECT
     c.city_name,
     MAX(w.temperature_max_c) AS max_temperature_c
@@ -7,16 +8,20 @@ JOIN cities c
 GROUP BY c.city_name
 ORDER BY max_temperature_c DESC;
 
+
+-- Highest precipitation by city
 SELECT
     c.city_name,
     MAX(w.precipitation_mm) AS max_precipitation_mm
 FROM weather_forecasts w
+
 JOIN cities c
     ON w.city_id = c.id
 GROUP BY c.city_name
 ORDER BY max_precipitation_mm DESC;
 
 
+-- Average weather risk by city
 SELECT
     c.city_name,
     AVG(w.risk_score) AS average_risk_score
@@ -27,6 +32,7 @@ GROUP BY c.city_name
 ORDER BY average_risk_score DESC;
 
 
+-- Highest weather risk by forecast date
 SELECT
     w.forecast_date,
     MAX(w.risk_score) AS max_risk_score
@@ -35,11 +41,13 @@ GROUP BY w.forecast_date
 ORDER BY max_risk_score DESC;
 
 
+-- Highest-risk period for each city
 SELECT
     c.city_name,
     w.forecast_date,
     w.risk_score
 FROM weather_forecasts w
+
 JOIN cities c
     ON w.city_id = c.id
 WHERE w.risk_score = (
@@ -50,6 +58,7 @@ WHERE w.risk_score = (
 ORDER BY w.risk_score DESC;
 
 
+-- Rank forecast periods by risk inside each city
 SELECT
     c.city_name,
     w.forecast_date,

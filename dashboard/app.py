@@ -1,31 +1,23 @@
 import streamlit as st
-import pandas as pd
-from database.db import engine
+from getdata import df
 
 st.title("WeatherOps Dashboard")
+st.write("displaying weather data and analysis.")
 
 
-query = """
-SELECT
-    c.city_name,
-    c.latitude,
-    c.longitude,
-    w.forecast_date,
-    w.temperature_max_c,
-    w.temperature_min_c,
-    w.precipitation_mm,
-    w.precipitation_probability_pct,
-    w.wind_speed_kmh,
-    w.wind_gust_kmh,
-    w.risk_score,
-    w.risk_level
-FROM weather_forecasts w
-JOIN cities c
-    ON w.city_id = c.id
-"""
+city_count = df["city_name"].nunique()
+max_temperature = df["temperature_max_c"].max()
+min_temperature = df["temperature_min_c"].min()
+max_precipitation = df["precipitation_mm"].max()
+risky_periods = df[df["risk_level"].isin(["high", "critical"])].shape[0]
 
+highest_risk_city = df.query("risk_score == risk_score.max()")["city_name"].iloc[0]
 
-df = pd.read_sql(query, engine)
+col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 2])
 
-
-st.dataframe(df)
+col1.metric("Number of Cities", city_count)
+col2.metric("Max Temperature", f"{max_temperature} °C")
+col3.metric("Min Temperature", f"{min_temperature} °C")
+col4.metric("Max Precipitation", f"{max_precipitation} mm")
+col5.metric("Risky Periods", risky_periods)
+col6.metric("Highest Risk City", highest_risk_city)
