@@ -76,8 +76,8 @@ weather_df["risk_score"] = weather_df["temperature_risk"] + weather_df["precipit
 
 weather_df["risk_level"] = pd.cut(
     weather_df["risk_score"],
-    bins = [-1,25, 50, 75, 100],
-    labels=["low", "modurate", "high", "critical"],
+    bins = [0,25, 50, 75, 101],
+    labels=["low", "moderate", "high", "critical"],
     right=False
 )
 

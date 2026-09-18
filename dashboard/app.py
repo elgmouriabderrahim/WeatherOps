@@ -1,8 +1,15 @@
 import streamlit as st
-from getdata import df
+from getdata import load_data
 import pandas as pd
 
+df = load_data()
+
 st.set_page_config(layout="wide")
+
+if df.empty:
+    st.warning("No weather data available.")
+    st.stop()
+
 
 st.title("WeatherOps Dashboard")
 st.write("displaying weather data and analysis.")

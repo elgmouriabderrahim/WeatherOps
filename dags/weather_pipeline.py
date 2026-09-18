@@ -17,27 +17,27 @@ with DAG(
 
     extract_cities = BashOperator(
     task_id="extract_cities",
-    bash_command="python extraction/extract_cities.py",
+    bash_command="cd /app && python extraction/extract_cities.py",
     )
 
     extract_weather = BashOperator(
         task_id="extract_weather",
-        bash_command="python extraction/extract_weather.py",
+        bash_command="cd /app && python extraction/extract_weather.py",
     )
 
     silver = BashOperator(
         task_id="silver_transformation",
-        bash_command="python transformation/clean_data.py",
+        bash_command="cd /app && python transformation/clean_data.py",
     )
 
     gold = BashOperator(
         task_id="gold_feature_engineering",
-        bash_command="python transformation/feature_engineering.py",
+        bash_command="cd /app && python transformation/feature_engineering.py",
     )
 
     load = BashOperator(
         task_id="load_postgresql",
-        bash_command="python load/load_postgres.py",
+        bash_command="cd /app && python load/load_postgres.py",
     )
 
     extract_cities >> extract_weather >> silver >> gold >> load
