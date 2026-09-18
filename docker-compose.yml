@@ -36,6 +36,22 @@ services:
       postgres:
         condition: service_healthy
 
+  airflow:
+    build: .
+    image: weatherops:1.0
+    command: ["airflow", "standalone"]
+    environment:
+      <<: *weather-database
+    ports:
+      - "8080:8080"
+    volumes:
+      - airflow_data:/opt/airflow
+      - weather_data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
-
+  airflow_data:
+  weather_data:
