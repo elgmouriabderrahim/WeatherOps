@@ -5,3 +5,4 @@ sqlalchemy
 streamlit
 apache-airflow
 python-dotenv
+pydeck

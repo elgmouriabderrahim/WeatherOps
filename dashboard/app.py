@@ -62,3 +62,63 @@ if select_city != "All":
 
     st.subheader(f"Precipitation Over Time for {select_city}")
     st.bar_chart(weather_over_time[["precipitation_mm"]])
+
+
+import pydeck as pdk
+
+st.subheader("Weather Risk Map")
+if filtered_df.empty:
+    st.info("No weather data matches the selected filters.")
+else:
+    map_df = (
+        filtered_df.groupby(["city_name", "latitude", "longitude"], as_index=False)
+        .agg(
+            risk_score=("risk_score", "mean"),
+            temperature_max_c=("temperature_max_c", "mean"),
+            temperature_min_c=("temperature_min_c", "mean"),
+            precipitation_mm=("precipitation_mm", "mean"),
+            wind_speed_kmh=("wind_speed_kmh", "mean"),
+            days=("forecast_date", "nunique"),
+        )
+    )
+    map_df["risk_level"] = pd.cut(
+        map_df["risk_score"],
+        bins=[0, 25, 50, 75, 101],
+        labels=["low", "moderate", "high", "critical"],
+        right=False,
+    ).astype(object)
+    map_df["color"] = map_df["risk_level"].map({
+        "low": [0, 220, 120, 255],
+        "moderate": [255, 220, 0, 255],
+        "high": [255, 140, 0, 255],
+        "critical": [255, 50, 50, 255],
+    })
+    map_df = map_df.round(2)
+
+    st.caption("Each city shows daily averages across the dates matching your filters. Colors represent average risk.")
+    layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=map_df,
+        get_position=["longitude", "latitude"],
+        get_radius="risk_score * 100",
+        radius_min_pixels=5,
+        get_fill_color="color",
+        pickable=True,
+    )
+    st.pydeck_chart(pdk.Deck(
+        layers=[layer],
+        initial_view_state=pdk.ViewState(
+            latitude=map_df["latitude"].mean(),
+            longitude=map_df["longitude"].mean(),
+            zoom=5,
+        ),
+        tooltip={"html": """
+            <b>{city_name}</b><br>
+            Days: {days}<br>
+            Avg Risk: {risk_score} ({risk_level})<br>
+            Avg Max Temp: {temperature_max_c} °C<br>
+            Avg Min Temp: {temperature_min_c} °C<br>
+            Avg Daily Rain: {precipitation_mm} mm<br>
+            Avg Wind: {wind_speed_kmh} km/h
+        """},
+    ))
