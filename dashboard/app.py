@@ -27,15 +27,25 @@ col6.metric("Highest Risk City", highest_risk_city)
 
 select_city = st.selectbox("Select a city to view its weather data:",["All"] + sorted(df["city_name"].unique()))
 select_risk_level = st.selectbox("Select a risk level to filter the data:", ["All", "low", "moderate", "high", "critical"])
-select_date = st.selectbox("Select a date to filter the data:", sorted(df["forecast_date"].unique()))
+select_date_range = st.date_input("Select a period:",value=(df["forecast_date"].min(),df["forecast_date"].max()))
+select_date = st.selectbox("Select a specific date:", ["All"] + sorted(df["forecast_date"].unique()))
+
 if select_city == "All":
     filtered_df = df
 else:
     filtered_df = df[df["city_name"] == select_city]
-
 if select_risk_level != "All":
     filtered_df = filtered_df[filtered_df["risk_level"] == select_risk_level]
-
 if select_date != "All":
     filtered_df = filtered_df[filtered_df["forecast_date"] == select_date]
-st.dataframe(filtered_df)
+if len(select_date_range) == 2:
+    start_date, end_date = select_date_range
+    filtered_df = filtered_df[
+        filtered_df["forecast_date"].between(start_date, end_date)
+    ]
+if select_date != "All":
+    filtered_df = filtered_df[filtered_df["forecast_date"] == select_date]
+
+risk_by_city = (filtered_df.groupby("city_name")["risk_score"].mean().sort_values(ascending=False))
+st.subheader("Risk by City")
+st.bar_chart(risk_by_city)
