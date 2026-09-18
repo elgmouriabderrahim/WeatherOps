@@ -26,10 +26,15 @@ col6.metric("Highest Risk City", highest_risk_city)
 
 
 select_city = st.selectbox("Select a city to view its weather data:",["All"] + sorted(df["city_name"].unique()))
+select_risk_level = st.selectbox("Select a risk level to filter the data:", ["All", "low", "moderate", "high", "critical"])
 
 if select_city == "All":
     filtered_df = df
 else:
     filtered_df = df[df["city_name"] == select_city]
+
+if select_risk_level != "All":
+    filtered_df = filtered_df[filtered_df["risk_level"] == select_risk_level]
+
 
 st.dataframe(filtered_df)
