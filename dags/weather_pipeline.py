@@ -1,5 +1,5 @@
-from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.sdk import DAG
+from airflow.providers.standard.operators.bash import BashOperator
 from datetime import datetime, timedelta
 
 default_args = {
@@ -15,14 +15,19 @@ with DAG(
     default_args=default_args,
 ) as dag:
 
-    extract = BashOperator(
-        task_id="extract",
-        bash_command="python extraction/extract.py",
+    extract_cities = BashOperator(
+    task_id="extract_cities",
+    bash_command="python extraction/extract_cities.py",
+    )
+
+    extract_weather = BashOperator(
+        task_id="extract_weather",
+        bash_command="python extraction/extract_weather.py",
     )
 
     silver = BashOperator(
         task_id="silver_transformation",
-        bash_command="python transformation/clean_cities.py",
+        bash_command="python transformation/clean_data.py",
     )
 
     gold = BashOperator(
@@ -35,4 +40,4 @@ with DAG(
         bash_command="python load/load_postgres.py",
     )
 
-    extract >> silver >> gold >> load
+    extract_cities >> extract_weather >> silver >> gold >> load
