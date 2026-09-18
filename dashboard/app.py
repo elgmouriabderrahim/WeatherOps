@@ -2,6 +2,8 @@ import streamlit as st
 from getdata import df
 import pandas as pd
 
+st.set_page_config(layout="wide")
+
 st.title("WeatherOps Dashboard")
 st.write("displaying weather data and analysis.")
 
@@ -24,11 +26,11 @@ col5.metric("Risky Periods", risky_periods)
 col6.metric("Highest Risk City", highest_risk_city)
 
 
-
-select_city = st.selectbox("Select a city to view its weather data:",["All"] + sorted(df["city_name"].unique()))
-select_risk_level = st.selectbox("Select a risk level to filter the data:", ["All", "low", "moderate", "high", "critical"])
-select_date_range = st.date_input("Select a period:",value=(df["forecast_date"].min(),df["forecast_date"].max()))
-select_date = st.selectbox("Select a specific date:", ["All"] + sorted(df["forecast_date"].unique()))
+with st.sidebar:
+    select_city = st.selectbox("Select a city to view its weather data:",["All"] + sorted(df["city_name"].unique()))
+    select_risk_level = st.selectbox("Select a risk level to filter the data:", ["All", "low", "moderate", "high", "critical"])
+    select_date_range = st.date_input("Select a period:",value=(df["forecast_date"].min(),df["forecast_date"].max()))
+    select_date = st.selectbox("Select a specific date:", ["All"] + sorted(df["forecast_date"].unique()))
 
 if select_city == "All":
     filtered_df = df
@@ -46,22 +48,26 @@ if len(select_date_range) == 2:
 if select_date != "All":
     filtered_df = filtered_df[filtered_df["forecast_date"] == select_date]
 
-risk_by_city = (filtered_df.groupby("city_name")["risk_score"].mean().sort_values(ascending=False))
-st.subheader("Risk by City")
-st.bar_chart(risk_by_city)
+dashboard_left, dashboard_right = st.columns(2)
+
+with dashboard_left:
+    risk_by_city = (filtered_df.groupby("city_name")["risk_score"].mean().sort_values(ascending=False))
+    st.subheader("Risk by City")
+    st.bar_chart(risk_by_city)
 
 
 
-if select_city != "All":
-    weather_over_time = filtered_df.copy()
-    weather_over_time["forecast_date"] = weather_over_time["forecast_date"].astype(str)
-    weather_over_time = weather_over_time.sort_values("forecast_date").set_index("forecast_date")
+with dashboard_right:
+    if select_city != "All":
+        weather_over_time = filtered_df.copy()
+        weather_over_time["forecast_date"] = weather_over_time["forecast_date"].astype(str)
+        weather_over_time = weather_over_time.sort_values("forecast_date").set_index("forecast_date")
 
-    st.subheader(f"Weather Over Time for {select_city}")
-    st.line_chart(weather_over_time[["temperature_max_c", "temperature_min_c"]])
+        st.subheader(f"Weather Over Time for {select_city}")
+        st.line_chart(weather_over_time[["temperature_max_c", "temperature_min_c"]])
 
-    st.subheader(f"Precipitation Over Time for {select_city}")
-    st.bar_chart(weather_over_time[["precipitation_mm"]])
+        st.subheader(f"Precipitation Over Time for {select_city}")
+        st.bar_chart(weather_over_time[["precipitation_mm"]])
 
 
 import pydeck as pdk
@@ -122,3 +128,9 @@ else:
             Avg Wind: {wind_speed_kmh} km/h
         """},
     ))
+
+
+if select_city == "All":
+    highest_risk_locations = (filtered_df.groupby("city_name")["risk_score"].max().sort_values(ascending=False).head(10).reset_index())
+    st.subheader("Highest Risk Locations")
+    st.dataframe(highest_risk_locations, use_container_width=True)
