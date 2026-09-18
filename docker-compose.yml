@@ -24,6 +24,8 @@ services:
   dashboard:
     build: .
     image: weatherops:1.0
+    entrypoint: []
+    command: ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
     environment: &weather-database
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}

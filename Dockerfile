@@ -20,5 +20,3 @@ ENV AIRFLOW__CORE__DAGS_FOLDER=/app/dags
 ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
 
 EXPOSE 8501 8080
-
-CMD ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
