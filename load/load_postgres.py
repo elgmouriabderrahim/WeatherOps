@@ -1,20 +1,8 @@
-from sqlalchemy import create_engine, text, MetaData, Table, select
+from sqlalchemy import MetaData, Table, text
 from sqlalchemy.dialects.postgresql import insert
-from dotenv import load_dotenv
-import os
 import pandas as pd
+from database.db import engine
 
-
-load_dotenv()
-
-db_user = os.getenv("POSTGRES_USER")
-db_password = os.getenv("POSTGRES_PASSWORD")
-db_host = os.getenv("POSTGRES_HOST")
-db_port = os.getenv("POSTGRES_PORT")
-db_name = os.getenv("POSTGRES_DB")
-
-db_url = f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-engine = create_engine(db_url)
 
 with engine.connect() as connection:
     connection.execute(text("select 1"))
