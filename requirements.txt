@@ -6,4 +6,3 @@ streamlit
 apache-airflow
 python-dotenv
 pydeck
-apache-airflow
